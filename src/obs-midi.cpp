@@ -5,7 +5,7 @@
 #include <obs-frontend-api.h>
 #include "rtmidi17/rtmidi17.hpp"
 #else
-#include <obs-frontend-api/obs-frontend-api.h>
+#include <obs/obs-frontend-api.h>
 #include "rtmidi17/rtmidi17.hpp"
 #endif
 #include <obs-data.h>

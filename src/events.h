@@ -23,7 +23,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #if __has_include(<obs-frontend-api.h>)
 #include <obs-frontend-api.h>
 #else
-#include <obs-frontend-api/obs-frontend-api.h>
+#include <obs/obs-frontend-api.h>
 #endif
 #include <util/platform.h>
 #include "obs-midi.h"
