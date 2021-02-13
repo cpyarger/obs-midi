@@ -95,7 +95,7 @@ target_link_libraries(obs-midi
 	${obs-midi_DEPS}
 	Qt5::Core
 	Qt5::Widgets
-	libobs)
+	libobs.so)
 # --- Windows-specific build settings and tasks ---
 if(WIN32)
 	if(NOT DEFINED OBS_FRONTEND_LIB)
@@ -232,3 +232,6 @@ if(APPLE)
 	target_link_libraries(obs-midi "${OBS_FRONTEND_LIB}")
 endif()
 # -- End of section --
+
+include_directories(/usr/include/obs)
+#link_directories(/usr/lib)
