@@ -449,7 +449,7 @@ jobs:
           rm ./release/${{ env.MAC_FILENAME_UNSIGNED }}
 
       - name: 'Notarization'
-        if: success() &&  github.ref == 'refs/heads/release'
+        if: success() &&  github.ref == 'refs/heads/master'
         working-directory: ./obs-midi
         shell: bash
         run: |
