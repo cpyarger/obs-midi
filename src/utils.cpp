@@ -127,6 +127,41 @@ obs_data_array_t *Utils::GetSceneItems(obs_source_t *source)
 
 	return items;
 }
+
+QStringList Utils::GetSceneItemsBySource(obs_source_t *source)
+{
+	QStringList itemNames;
+
+	obs_data_array_t *items = obs_data_array_create();
+	OBSScene scene = obs_scene_from_source(source);
+
+	if (!scene) {
+		return itemNames;
+	}
+
+	obs_scene_enum_items(
+		scene,
+		[](obs_scene_t *scene, obs_sceneitem_t *currentItem,
+		   void *param) {
+			obs_data_array_t *data =
+				reinterpret_cast<obs_data_array_t *>(param);
+
+			OBSDataAutoRelease itemData =
+				GetSceneItemData(currentItem);
+			obs_data_array_insert(data, 0, itemData);
+			return true;
+		},
+		items);
+
+	for (int i = 0; i < obs_data_array_count(items); i++) {
+		itemNames.append(obs_data_get_string(
+			obs_data_array_item(items, i), "sourceName"));
+	}
+
+	obs_data_array_release(items);
+	return itemNames;
+}
+
 /**
  * @typedef {Object} `SceneItem` An OBS Scene Item.
  * @property {Number} `cy`

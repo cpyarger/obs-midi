@@ -587,12 +587,6 @@ void PluginWindow::obs_actions_select(QString action)
 	if (!switching) {
 		HideAllPairs();
 
-		OBSDataArrayAutoRelease items =
-			Utils::GetSceneItems(obs_get_source_by_name(
-				ui->cb_obs_output_scene->currentText()
-					.toStdString()
-					.c_str()));
-
 		switch (ActionsClass::string_to_action(untranslate(action))) {
 		case ActionsClass::Actions::Set_Current_Scene:
 			ShowPair(Pairs::Scene);
@@ -685,18 +679,16 @@ void PluginWindow::obs_actions_select(QString action)
 		case ActionsClass::Actions::Scrub_Media:
 			ShowPair(Pairs::Media);
 			break;
-		case ActionsClass::Actions::Toggle_Source_Visibility:
+		case ActionsClass::Actions::Toggle_Source_Visibility:{
 			ShowPair(Pairs::Scene);
+			obs_source_t *source = obs_get_source_by_name(
+				ui->cb_obs_output_scene->currentText().toStdString().c_str());
+			QStringList items = Utils::GetSceneItemsBySource(source);
+			obs_source_release(source);
 			ui->cb_obs_output_item->clear();
-			for (int i = 0; i < obs_data_array_count(items); i++) {
-				ui->cb_obs_output_item->addItem(
-					obs_data_get_string(
-						obs_data_array_item(items, i),
-						"sourceName"));
-			}
-
+			ui->cb_obs_output_item->addItems(items);
 			ShowPair(Pairs::Item);
-			break;
+		} break;
 		default:
 			HideAllPairs();
 			break;
