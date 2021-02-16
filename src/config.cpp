@@ -72,7 +72,7 @@ void Config::Load()
 	blog(LOG_INFO, "Loaded: \n %s",
 	     config_get_string(obsConfig, SECTION_NAME, PARAM_DEVICES));
 	deviceManager->Load(deviceManagerData);
-
+	obs_data_release(deviceManagerData);
 	SettingsLoaded = true;
 }
 

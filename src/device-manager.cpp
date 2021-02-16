@@ -43,6 +43,7 @@ void DeviceManager::Load(obs_data_t *data)
 		obs_data_t *deviceData = obs_data_array_item(devicesData, i);
 		MidiAgent *device = new MidiAgent();
 		device->Load(deviceData);
+		obs_data_release(deviceData);
 		midiAgents.push_back(device);
 
 		connect(this, SIGNAL(bcast(QString, QString)), device,
@@ -61,6 +62,8 @@ void DeviceManager::Load(obs_data_t *data)
 			}
 		}
 	}
+
+	obs_data_array_release(devicesData);
 }
 
 void DeviceManager::Unload()
