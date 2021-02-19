@@ -69,7 +69,7 @@ void ReloadBrowserSource(QString sourceName);
 void TakeSourceScreenshot(QString source);
 void EnableSourceFilter(obs_source_t *source);
 void DisableSourceFilter(obs_source_t *source);
-void ToggleSourceFilter(QString sourcename,QString filtername);
+void ToggleSourceFilter(QString sourcename, QString filtername);
 
 // CC ACTIONS
 void SetVolume(QString source, float volume);

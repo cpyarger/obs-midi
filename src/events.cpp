@@ -74,8 +74,6 @@ events::events(DeviceManagerPtr srv)
 	cpuUsageInfo = os_cpu_usage_info_start();
 	obs_frontend_add_event_callback(events::FrontendEventHandler, this);
 
-	
-
 	// Connect to signals of all existing sources
 	obs_enum_sources(
 		[](void *param, obs_source_t *source) {

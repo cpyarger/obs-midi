@@ -64,9 +64,9 @@ PluginWindow::PluginWindow(QWidget *parent)
 	connect(ui->cb_obs_output_scene, SIGNAL(currentTextChanged(QString)),
 		this, SLOT(on_scene_change(QString)));
 
-	connect(ui->table_mapping, SIGNAL(cellClicked(int,int)), this,
+	connect(ui->table_mapping, SIGNAL(cellClicked(int, int)), this,
 		SLOT(edit_mapping()));
-	
+
 	/**************Connections to mappper****************/
 	connect(ui->btn_add, SIGNAL(clicked()), this, SLOT(add_new_mapping()));
 	connect(ui->btn_delete, SIGNAL(clicked()), this,
@@ -87,7 +87,6 @@ void PluginWindow::ToggleShowHide()
 		ui->btn_Listen_many->setChecked(false);
 		ui->btn_Listen_one->setChecked(false);
 		HideAllPairs();
-
 	}
 }
 void PluginWindow::setCheck(bool x)
@@ -140,7 +139,7 @@ void PluginWindow::SetAvailableDevices()
 	this->ui->list_midi_dev->setCurrentRow(-1);
 	this->ui->list_midi_dev->setCurrentRow(0);
 	on_device_select(ui->list_midi_dev->currentItem()->text());
-	
+
 	ui->outbox->setEnabled(
 		GetDeviceManager()
 			.get()
@@ -332,7 +331,8 @@ void PluginWindow::ShowPair(Pairs Pair)
 	case Pairs::Filter:
 		ui->label_obs_output_filter->show();
 		ui->cb_obs_output_filter->show();
-		ui->cb_obs_output_filter->addItems(Utils::get_filter_names(ui->cb_obs_output_source->currentText()));
+		ui->cb_obs_output_filter->addItems(Utils::get_filter_names(
+			ui->cb_obs_output_source->currentText()));
 		ui->w_filter->show();
 		break;
 	case Pairs::Transition:
@@ -345,7 +345,8 @@ void PluginWindow::ShowPair(Pairs Pair)
 	case Pairs::Item:
 		ui->label_obs_output_item->show();
 		ui->cb_obs_output_item->show();
-		ui->cb_obs_output_item->addItems(Utils::GetSceneItemsList(ui->cb_obs_output_scene->currentText()));
+		ui->cb_obs_output_item->addItems(Utils::GetSceneItemsList(
+			ui->cb_obs_output_scene->currentText()));
 		ui->w_item->show();
 		break;
 	case Pairs::Audio:
@@ -488,8 +489,7 @@ void PluginWindow::HideEntry(ActionsClass::Actions Entry)
 }
 void PluginWindow::ShowAllActions()
 {
-	for (int i = 0; i < Utils::AllActions_raw.count(); i++)
-	{
+	for (int i = 0; i < Utils::AllActions_raw.count(); i++) {
 		ShowEntry(Utils::AllActions_raw.at(i));
 	}
 }
@@ -611,7 +611,7 @@ void PluginWindow::obs_actions_select(QString action)
 		case ActionsClass::Actions::Scrub_Media:
 			ShowPair(Pairs::Media);
 			break;
-		case ActionsClass::Actions::Toggle_Source_Visibility:{
+		case ActionsClass::Actions::Toggle_Source_Visibility: {
 			ShowPair(Pairs::Scene);
 			ShowPair(Pairs::Source);
 		} break;
@@ -718,7 +718,8 @@ void PluginWindow::add_new_mapping()
 
 	} else {
 		if (ui->sb_channel->value()) {
-			Utils::alert_popup("Can Not Map Channel 0. \nPlease Click Listen One or Listen Many to listen for MIDI Event to map");
+			Utils::alert_popup(
+				"Can Not Map Channel 0. \nPlease Click Listen One or Listen Many to listen for MIDI Event to map");
 		}
 		if (!verify_mapping()) {
 			Utils::alert_popup("Mapping Missing required variable");
@@ -893,18 +894,19 @@ bool PluginWindow::verify_mapping()
 		return true;
 	}
 }
-void PluginWindow::on_scene_change(QString newscene) {
+void PluginWindow::on_scene_change(QString newscene)
+{
 	if (ui->cb_obs_output_source->isVisible()) {
 		ui->cb_obs_output_source->clear();
 		ui->cb_obs_output_source->addItems(
 			Utils::get_source_names(newscene));
 	}
 }
-void PluginWindow::on_source_change(QString newsource) {
+void PluginWindow::on_source_change(QString newsource)
+{
 	if (ui->cb_obs_output_filter->isVisible()) {
 		ui->cb_obs_output_filter->clear();
 		ui->cb_obs_output_filter->addItems(
 			Utils::get_filter_names(newsource));
 	}
-
 }

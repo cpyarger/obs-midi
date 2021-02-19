@@ -46,7 +46,7 @@ public slots:
 	void ResetToDefaults();
 	void on_scene_change(QString newscene);
 	void on_source_change(QString newsource);
-	
+
 	void add_new_mapping();
 	void add_row_from_hook(MidiHook *hook);
 	void tab_changed(int i);

@@ -55,7 +55,9 @@ public:
 	QString string_override;
 	bool bool_override;
 	int int_override;
-	MidiMessage* get_message_from_hook() {
+	int value = -1;
+	MidiMessage *get_message_from_hook()
+	{
 		MidiMessage *message = new MidiMessage();
 		message->channel = this->channel;
 		message->message_type = this->message_type;
@@ -130,7 +132,7 @@ class MidiAgent : public QObject {
 
 public:
 	MidiAgent();
-	MidiAgent(obs_data_t* data);
+	MidiAgent(obs_data_t *data);
 	~MidiAgent();
 	void Load(obs_data_t *data);
 
@@ -172,7 +174,7 @@ private:
 	bool enabled;
 	bool connected;
 	bool bidirectional;
-	MidiHook * get_midi_hook_if_exists(MidiMessage *message);
+	MidiHook *get_midi_hook_if_exists(MidiMessage *message);
 	bool closing = false;
 	QVector<MidiHook *> midiHooks;
 	void do_obs_action(MidiHook *hook, int MidiVal);

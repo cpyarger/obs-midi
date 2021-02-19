@@ -265,7 +265,8 @@ const QList<ActionsClass::Actions> not_ready_actions{
 	ActionsClass::Actions::Set_Gain_Filter,
 	ActionsClass::Actions::Set_Media_Time,
 	ActionsClass::Actions::Set_Source_Settings,
-	ActionsClass::Actions::Set_Sync_Offset, ActionsClass::Actions::Set_Mute,
+	ActionsClass::Actions::Set_Sync_Offset,
+	ActionsClass::Actions::Set_Mute,
 	ActionsClass::Actions::Scrub_Media,
 	ActionsClass::Actions::Set_Audio_Monitor_Type,
 	ActionsClass::Actions::Set_Scene_Item_Crop,
@@ -275,7 +276,7 @@ const QList<ActionsClass::Actions> not_ready_actions{
 	ActionsClass::Actions::Set_Text_GDIPlus_Text,
 	//ActionsClass::Actions::Set_Opacity,
 	ActionsClass::Actions::Set_Browser_Source_URL,
-	};
+};
 
 void alert_popup(QString message);
 QString translate_action(ActionsClass::Actions action);
@@ -292,9 +293,9 @@ typedef struct MidiMessage {
 	}
 	QString device_name;
 	QString message_type;
-	int channel=0;
-	int NORC=0;
-	int value=0;
-	MidiMessage get() { return (MidiMessage)*this; }
+	int channel = 0;
+	int NORC = 0;
+	int value = 0;
+	MidiMessage get() { return (MidiMessage) * this; }
 } MidiMessage;
 Q_DECLARE_METATYPE(MidiMessage);
