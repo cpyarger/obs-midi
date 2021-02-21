@@ -52,6 +52,7 @@ MidiAgent::MidiAgent()
 
 	midiin.set_callback(
 		[this](const auto &message) { HandleInput(message, this); });
+	obsActions = new OBSController(this);
 }
 MidiAgent::MidiAgent(obs_data_t *midiData)
 {
@@ -59,9 +60,11 @@ MidiAgent::MidiAgent(obs_data_t *midiData)
 	midiin.set_callback(
 		[this](const auto &message) { HandleInput(message, this); });
 	this->Load(midiData);
+	obsActions = new OBSController(this);
 }
 MidiAgent::~MidiAgent()
 {
+
 	clear_MidiHooks();
 	midiin.cancel_callback();
 }
@@ -222,7 +225,7 @@ void MidiAgent::HandleInput(const rtmidi::message &message, void *userData)
 	emit self->broadcast_midi_message((MidiMessage)*x);
 	/** check if hook exists for this note or cc norc and launch it **/
 
-	self->do_obs_action(self->get_midi_hook_if_exists(x), x->value);
+	emit self->do_obs_action(self->get_midi_hook_if_exists(x), x->value);
 
 	delete (x);
 }
@@ -481,170 +484,5 @@ void MidiAgent::send_message_to_midi_device(MidiMessage message)
 	} else if (message.message_type == "Note Off") {
 		this->midiout.send_message(hello->note_off(
 			message.channel, message.NORC, message.value));
-	}
-}
-
-void MidiAgent::do_obs_action(MidiHook *hook, int MidiVal)
-{
-	if (hook != NULL) {
-
-		switch (ActionsClass::string_to_action(
-			Utils::untranslate(hook->action))) {
-		case ActionsClass::Actions::Set_Current_Scene:
-			OBSController::SetCurrentScene(hook->scene);
-			break;
-		case ActionsClass::Actions::Reset_Scene_Item:
-			OBSController::ResetSceneItem(hook->scene, hook->item);
-			break;
-		case ActionsClass::Actions::Toggle_Mute:
-			OBSController::ToggleMute(hook->audio_source);
-			break;
-		case ActionsClass::Actions::Do_Transition:
-			OBSController::TransitionToProgram();
-			break;
-		case ActionsClass::Actions::Set_Current_Transition:
-			OBSController::SetCurrentTransition(hook->transition);
-			break;
-		case ActionsClass::Actions::Set_Mute:
-			OBSController::SetMute(hook->audio_source,
-					       hook->bool_override);
-			break;
-		case ActionsClass::Actions::Toggle_Start_Stop_Streaming:
-			OBSController::StartStopStreaming();
-			break;
-		case ActionsClass::Actions::Set_Preview_Scene:
-			OBSController::SetPreviewScene(hook->scene);
-			break;
-		case ActionsClass::Actions::Set_Current_Scene_Collection:
-			OBSController::SetCurrentSceneCollection(
-				hook->scene_collection);
-			break;
-		case ActionsClass::Actions::Set_Transition_Duration:
-			if (hook->duration != -1) {
-				OBSController::SetTransitionDuration(
-					hook->duration);
-			} else {
-				OBSController::SetTransitionDuration(MidiVal);
-			}
-			break;
-		case ActionsClass::Actions::Start_Streaming:
-			OBSController::StartStreaming();
-			break;
-		case ActionsClass::Actions::Stop_Streaming:
-			OBSController::StopStreaming();
-			break;
-		case ActionsClass::Actions::Start_Recording:
-			OBSController::StartRecording();
-			break;
-		case ActionsClass::Actions::Stop_Recording:
-			OBSController::StopRecording();
-			break;
-		case ActionsClass::Actions::Start_Replay_Buffer:
-			OBSController::StartReplayBuffer();
-			break;
-		case ActionsClass::Actions::Stop_Replay_Buffer:
-			OBSController::StopReplayBuffer();
-			break;
-		case ActionsClass::Actions::Set_Volume:
-			OBSController::SetVolume(hook->audio_source,
-						 pow(Utils::mapper(MidiVal),
-						     3.0));
-			break;
-		case ActionsClass::Actions::Take_Source_Screenshot:
-			OBSController::TakeSourceScreenshot(hook->source);
-			break;
-		case ActionsClass::Actions::Pause_Recording:
-			OBSController::PauseRecording();
-			break;
-		case ActionsClass::Actions::Enable_Source_Filter:
-			OBSController::EnableSourceFilter(
-				obs_get_source_by_name(
-					hook->source.toStdString().c_str()));
-			break;
-		case ActionsClass::Actions::Disable_Source_Filter:
-			OBSController::DisableSourceFilter(
-				obs_get_source_by_name(
-					hook->source.toStdString().c_str()));
-			break;
-		case ActionsClass::Actions::Toggle_Start_Stop_Recording:
-			OBSController::StartStopRecording();
-			break;
-		case ActionsClass::Actions::Toggle_Start_Stop_Replay_Buffer:
-			OBSController::StartStopReplayBuffer();
-			break;
-		case ActionsClass::Actions::Resume_Recording:
-			OBSController::ResumeRecording();
-			break;
-		case ActionsClass::Actions::Save_Replay_Buffer:
-			OBSController::SaveReplayBuffer();
-			break;
-		case ActionsClass::Actions::Set_Current_Profile:
-			OBSController::SetCurrentProfile(hook->profile);
-			break;
-		case ActionsClass::Actions::Toggle_Source_Filter:
-			OBSController::ToggleSourceFilter(hook->source,
-							  hook->filter);
-			break;
-		case ActionsClass::Actions::Set_Text_GDIPlus_Text:
-			OBSController::SetTextGDIPlusText(
-				hook->string_override);
-			break;
-		case ActionsClass::Actions::Set_Browser_Source_URL:
-			OBSController::SetBrowserSourceURL(
-				hook->source, hook->string_override);
-			break;
-		case ActionsClass::Actions::Reload_Browser_Source:
-			OBSController::ReloadBrowserSource(hook->source);
-			break;
-		case ActionsClass::Actions::Set_Sync_Offset:
-			OBSController::SetSyncOffset(hook->media_source,
-						     (int64_t)MidiVal);
-			break;
-		case ActionsClass::Actions::Set_Source_Rotation:
-			OBSController::SetSourceRotation();
-			break;
-		case ActionsClass::Actions::Set_Source_Position:
-			OBSController::SetSourcePosition();
-			break;
-		case ActionsClass::Actions::Set_Gain_Filter:
-			OBSController::SetGainFilter();
-			break;
-		case ActionsClass::Actions::Set_Opacity:
-			OBSController::SetOpacity();
-			break;
-		case ActionsClass::Actions::Set_Source_Scale:
-			OBSController::SetSourceScale();
-			break;
-		case ActionsClass::Actions::Move_T_Bar:
-			OBSController::move_t_bar(MidiVal);
-			break;
-		case ActionsClass::Actions::Play_Pause_Media:
-			OBSController::play_pause_media_source(
-				hook->media_source);
-			break;
-		case ActionsClass::Actions::Studio_Mode:
-			OBSController::toggle_studio_mode();
-			break;
-		case ActionsClass::Actions::Reset_Stats:
-			OBSController::reset_stats();
-			break;
-		case ActionsClass::Actions::Restart_Media:
-			OBSController::restart_media(hook->media_source);
-			break;
-
-		case ActionsClass::Actions::Stop_Media:
-			OBSController::stop_media(hook->media_source);
-			break;
-		case ActionsClass::Actions::Previous_Media:
-			OBSController::prev_media(hook->media_source);
-			break;
-		case ActionsClass::Actions::Next_Media:
-			OBSController::next_media(hook->media_source);
-			break;
-		case ActionsClass::Actions::Toggle_Source_Visibility:
-			OBSController::ToggleSourceVisibility(hook->scene,
-							      hook->source);
-			break;
-		};
 	}
 }

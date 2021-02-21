@@ -36,11 +36,13 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "rpc/RpcEvent.h"
 #include "utils.h"
 
-class MidiHook {
+class MidiHook :public QObject{
+	Q_OBJECT
+
 public:
-	int channel;          //midi channel
+	int channel=-1;          //midi channel
 	QString message_type; // Message Type
-	int norc;             // Note or Control
+	int norc=-1;             // Note or Control
 	QString action;
 	QString scene;
 	QString source;
@@ -53,8 +55,8 @@ public:
 	QString scene_collection;
 	QString profile;
 	QString string_override;
-	bool bool_override;
-	int int_override;
+	bool bool_override=false;
+	int int_override=-1;
 	int value = -1;
 	MidiMessage *get_message_from_hook()
 	{
@@ -64,7 +66,6 @@ public:
 		message->NORC = this->norc;
 		return message;
 	}
-	MidiHook(){};
 
 	MidiHook(QString jsonString)
 	{
@@ -126,6 +127,7 @@ public:
 
 	const char *ToJSON() { return obs_data_get_json(GetData()); }
 };
+Q_DECLARE_METATYPE(MidiHook);
 
 class MidiAgent : public QObject {
 	Q_OBJECT
@@ -160,6 +162,7 @@ public slots:
 	void handle_obs_event(QString eventType, QString eventData);
 signals:
 	void broadcast_midi_message(MidiMessage);
+	void do_obs_action(MidiHook, int);
 
 private:
 	void send_message_to_midi_device(MidiMessage message);
@@ -177,5 +180,5 @@ private:
 	MidiHook *get_midi_hook_if_exists(MidiMessage *message);
 	bool closing = false;
 	QVector<MidiHook *> midiHooks;
-	void do_obs_action(MidiHook *hook, int MidiVal);
+	OBSController *obsActions;
 };

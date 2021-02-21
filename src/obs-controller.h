@@ -16,77 +16,75 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
 #pragma once
-
-#include <iostream>
-
-#include "utils.h"
-#include "midi-agent.h"
-#include "obs-midi.h"
-
 #if __has_include(<obs-frontend-api.h>)
 #include <obs-frontend-api.h>
 #else
 #include <obs-frontend-api/obs-frontend-api.h>
 #endif
-namespace OBSController {
+#include <iostream>
+#include "utils.h"
+#include "midi-agent.h"
+#include "obs-midi.h"
+#include "qobject.h"
 
+class OBSController: QObject {
+	Q_OBJECT
 // BUTTON ACTIONS
-void SetCurrentScene(QString sceneName);
-void SetPreviewScene(QString sceneName);
-void SetCurrentSceneCollection(QString sceneCollection);
-void ResetSceneItem(QString sceneName, QString itemName);
-void TransitionToProgram();
-void TransitionToProgram(QString transitionName, int transitionDuration = 300);
-void SetCurrentTransition(QString name);
-void SetTransitionDuration(int duration); // can also be used with cc
 
-void SetSourceVisibility(QString scene, QString source,
-			 bool set);                         // doesn't exist??
-void ToggleSourceVisibility(QString scene, QString source); //doesn't exist?
+public:
+	OBSController(MidiAgent *agent);
+	
+public	slots:
+	void SetCurrentScene(MidiHook *hook, int midi_value);
+	void SetPreviewScene(MidiHook *hook, int midi_value);
+	void SetCurrentSceneCollection(MidiHook *hook, int midi_value);
+	void ResetSceneItem(MidiHook *hook, int midi_value);
+	void TransitionToProgram(MidiHook *hook, int midi_value);
+	void SetCurrentTransition(MidiHook *hook, int midi_value);
+	void SetTransitionDuration(MidiHook *hook, int midi_value); // can also be used with cc
+	void SetSourceVisibility(MidiHook *hook, int midi_value);                   // doesn't exist??
+	void ToggleSourceVisibility(MidiHook *hook, int midi_value); //doesn't exist?
+	void ToggleMute(MidiHook *hook, int midi_value);
+	void SetMute(MidiHook *hook, int midi_value);
+	void StartStopStreaming(MidiHook *hook, int midi_value);
+	void StartStreaming(MidiHook *hook, int midi_value);
+	void StopStreaming(MidiHook *hook, int midi_value);
+	void StartStopRecording(MidiHook *hook, int midi_value);
+	void StartRecording(MidiHook *hook, int midi_value);
+	void StopRecording(MidiHook *hook, int midi_value);
+	void PauseRecording(MidiHook *hook, int midi_value);
+	void ResumeRecording(MidiHook *hook, int midi_value);
+	void StartStopReplayBuffer(MidiHook *hook, int midi_value);
+	void StartReplayBuffer(MidiHook *hook, int midi_value);
+	void StopReplayBuffer(MidiHook *hook, int midi_value);
+	void SaveReplayBuffer(MidiHook *hook, int midi_value);
+	void SetCurrentProfile(MidiHook *hook, int midi_value);
+	void SetTextGDIPlusText(MidiHook *hook, int midi_value);
+	void SetBrowserSourceURL(MidiHook *hook, int midi_value);
+	void ReloadBrowserSource(MidiHook *hook, int midi_value);
+	void TakeSourceScreenshot(MidiHook *hook, int midi_value);
+	void EnableSourceFilter(MidiHook *hook, int midi_value);
+	void DisableSourceFilter(MidiHook *hook, int midi_value);
+	void ToggleSourceFilter(MidiHook *hook, int midi_value);
 
-void ToggleMute(QString sourceName);
-void SetMute(QString sourceName, bool mute);
+	// CC ACTIONS
+	void SetVolume(MidiHook *hook, int midi_value);
+	void SetSyncOffset(MidiHook *hook, int midi_value);
+	void SetSourcePosition(MidiHook *hook, int midi_value);
+	void SetSourceRotation(MidiHook *hook, int midi_value);
+	void SetSourceScale(MidiHook *hook, int midi_value);
+	void SetGainFilter(MidiHook *hook, int midi_value);
+	void SetOpacity(MidiHook *hook, int midi_value);
+	void move_t_bar(MidiHook *hook, int midi_value);
+	void play_pause_media_source(MidiHook *hook, int midi_value);
+	void toggle_studio_mode(MidiHook *hook, int midi_value);
+	void reset_stats(MidiHook *hook, int midi_value);
+	void restart_media(MidiHook *hook, int midi_value);
+	void stop_media(MidiHook *hook, int midi_value);
+	void play_media(MidiHook *hook, int midi_value);
+	void next_media(MidiHook *hook, int midi_value);
+	void prev_media(MidiHook *hook, int midi_value);
 
-void StartStopStreaming();
-void StartStreaming();
-void StopStreaming();
-
-void StartStopRecording();
-void StartRecording();
-void StopRecording();
-void PauseRecording();
-void ResumeRecording();
-
-void StartStopReplayBuffer();
-void StartReplayBuffer();
-void StopReplayBuffer();
-void SaveReplayBuffer();
-
-void SetCurrentProfile(QString profileName);
-void SetTextGDIPlusText(QString text);
-void SetBrowserSourceURL(QString sourceName, QString url);
-void ReloadBrowserSource(QString sourceName);
-void TakeSourceScreenshot(QString source);
-void EnableSourceFilter(obs_source_t *source);
-void DisableSourceFilter(obs_source_t *source);
-void ToggleSourceFilter(QString sourcename, QString filtername);
-
-// CC ACTIONS
-void SetVolume(QString source, float volume);
-void SetSyncOffset(QString sourceName, int64_t sourceSyncOffset);
-void SetSourcePosition();
-void SetSourceRotation();
-void SetSourceScale();
-void SetGainFilter();
-void SetOpacity();
-void move_t_bar(int move);
-void play_pause_media_source(QString MediaSource);
-void toggle_studio_mode();
-void reset_stats();
-void restart_media(QString media_source);
-void stop_media(QString media_source);
-void play_media(QString media_source);
-void next_media(QString media_source);
-void prev_media(QString media_source);
-
+private:
+	MidiAgent *device=NULL;
 };
