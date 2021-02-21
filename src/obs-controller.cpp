@@ -167,11 +167,11 @@ OBSController::OBSController(MidiHook *incoming_hook, int incoming_midi_value)
 		this->ToggleSourceVisibility();
 		break;
 	};
-
+	this->deleteLater();
 }
 OBSController::~OBSController()
 {
-	this->deleteLater();
+	
 }
 	/**
  * Sets the currently active scene
