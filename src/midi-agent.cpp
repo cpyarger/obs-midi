@@ -32,7 +32,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "midi-agent.h"
 #include "obs-midi.h"
 #include "config.h"
-#include "obs-controller.h"
+
 
 #include "device-manager.h"
 using namespace std;
@@ -46,21 +46,21 @@ using namespace std;
 ////////////////
 MidiAgent::MidiAgent()
 {
+
 	this->setParent(GetDeviceManager().get());
 	midi_input_name = "Midi Device (uninit)";
 	midi_output_name = "Midi Out Device (uninit)";
 
 	midiin.set_callback(
 		[this](const auto &message) { HandleInput(message, this); });
-	obsActions = new OBSController(this);
 }
 MidiAgent::MidiAgent(obs_data_t *midiData)
 {
+
 	this->setParent(GetDeviceManager().get());
 	midiin.set_callback(
 		[this](const auto &message) { HandleInput(message, this); });
 	this->Load(midiData);
-	obsActions = new OBSController(this);
 }
 MidiAgent::~MidiAgent()
 {
@@ -225,8 +225,8 @@ void MidiAgent::HandleInput(const rtmidi::message &message, void *userData)
 	emit self->broadcast_midi_message((MidiMessage)*x);
 	/** check if hook exists for this note or cc norc and launch it **/
 
-	emit self->do_obs_action(self->get_midi_hook_if_exists(x), x->value);
-
+	OBSController *oc = new OBSController(self->get_midi_hook_if_exists(x), x->value);
+	oc->~OBSController();
 	delete (x);
 }
 

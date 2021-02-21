@@ -23,68 +23,75 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #endif
 #include <iostream>
 #include "utils.h"
-#include "midi-agent.h"
 #include "obs-midi.h"
 #include "qobject.h"
 
-class OBSController: QObject {
+class OBSController : public QObject {
 	Q_OBJECT
-// BUTTON ACTIONS
+	// BUTTON ACTIONS
 
 public:
-	OBSController(MidiAgent *agent);
-	
-public	slots:
-	void SetCurrentScene(MidiHook *hook, int midi_value);
-	void SetPreviewScene(MidiHook *hook, int midi_value);
-	void SetCurrentSceneCollection(MidiHook *hook, int midi_value);
-	void ResetSceneItem(MidiHook *hook, int midi_value);
-	void TransitionToProgram(MidiHook *hook, int midi_value);
-	void SetCurrentTransition(MidiHook *hook, int midi_value);
-	void SetTransitionDuration(MidiHook *hook, int midi_value); // can also be used with cc
-	void SetSourceVisibility(MidiHook *hook, int midi_value);                   // doesn't exist??
-	void ToggleSourceVisibility(MidiHook *hook, int midi_value); //doesn't exist?
-	void ToggleMute(MidiHook *hook, int midi_value);
-	void SetMute(MidiHook *hook, int midi_value);
-	void StartStopStreaming(MidiHook *hook, int midi_value);
-	void StartStreaming(MidiHook *hook, int midi_value);
-	void StopStreaming(MidiHook *hook, int midi_value);
-	void StartStopRecording(MidiHook *hook, int midi_value);
-	void StartRecording(MidiHook *hook, int midi_value);
-	void StopRecording(MidiHook *hook, int midi_value);
-	void PauseRecording(MidiHook *hook, int midi_value);
-	void ResumeRecording(MidiHook *hook, int midi_value);
-	void StartStopReplayBuffer(MidiHook *hook, int midi_value);
-	void StartReplayBuffer(MidiHook *hook, int midi_value);
-	void StopReplayBuffer(MidiHook *hook, int midi_value);
-	void SaveReplayBuffer(MidiHook *hook, int midi_value);
-	void SetCurrentProfile(MidiHook *hook, int midi_value);
-	void SetTextGDIPlusText(MidiHook *hook, int midi_value);
-	void SetBrowserSourceURL(MidiHook *hook, int midi_value);
-	void ReloadBrowserSource(MidiHook *hook, int midi_value);
-	void TakeSourceScreenshot(MidiHook *hook, int midi_value);
-	void EnableSourceFilter(MidiHook *hook, int midi_value);
-	void DisableSourceFilter(MidiHook *hook, int midi_value);
-	void ToggleSourceFilter(MidiHook *hook, int midi_value);
-
-	// CC ACTIONS
-	void SetVolume(MidiHook *hook, int midi_value);
-	void SetSyncOffset(MidiHook *hook, int midi_value);
-	void SetSourcePosition(MidiHook *hook, int midi_value);
-	void SetSourceRotation(MidiHook *hook, int midi_value);
-	void SetSourceScale(MidiHook *hook, int midi_value);
-	void SetGainFilter(MidiHook *hook, int midi_value);
-	void SetOpacity(MidiHook *hook, int midi_value);
-	void move_t_bar(MidiHook *hook, int midi_value);
-	void play_pause_media_source(MidiHook *hook, int midi_value);
-	void toggle_studio_mode(MidiHook *hook, int midi_value);
-	void reset_stats(MidiHook *hook, int midi_value);
-	void restart_media(MidiHook *hook, int midi_value);
-	void stop_media(MidiHook *hook, int midi_value);
-	void play_media(MidiHook *hook, int midi_value);
-	void next_media(MidiHook *hook, int midi_value);
-	void prev_media(MidiHook *hook, int midi_value);
+	OBSController(MidiHook *incoming_midi_hook, int incoming_midi_value);
+	~OBSController();
 
 private:
-	MidiAgent *device=NULL;
+	/**
+	* Variables
+	*/
+	MidiHook *hook;
+	int midi_value;
+
+private:
+	/**
+	* Actions
+	*/
+	void SetCurrentScene();
+	void SetPreviewScene();
+	void SetCurrentSceneCollection();
+	void ResetSceneItem();
+	void TransitionToProgram();
+	void SetCurrentTransition();
+	void SetTransitionDuration();  // can also be used with cc
+	void SetSourceVisibility();    // doesn't exist??
+	void ToggleSourceVisibility(); //doesn't exist?
+	void ToggleMute();
+	void SetMute();
+	void StartStopStreaming();
+	void StartStreaming();
+	void StopStreaming();
+	void StartStopRecording();
+	void StartRecording();
+	void StopRecording();
+	void PauseRecording();
+	void ResumeRecording();
+	void StartStopReplayBuffer();
+	void StartReplayBuffer();
+	void StopReplayBuffer();
+	void SaveReplayBuffer();
+	void SetCurrentProfile();
+	void SetTextGDIPlusText();
+	void SetBrowserSourceURL();
+	void ReloadBrowserSource();
+	void TakeSourceScreenshot();
+	void EnableSourceFilter();
+	void DisableSourceFilter();
+	void ToggleSourceFilter();
+
+	// CC ACTIONS
+	void SetVolume();
+	void SetSyncOffset();
+	void SetSourcePosition();
+	void SetSourceRotation();
+	void SetSourceScale();
+	void SetGainFilter();
+	void SetOpacity();
+	void move_t_bar();
+	void play_pause_media_source();
+	void toggle_studio_mode();
+	void reset_stats();
+	void restart_media();
+	void stop_media();
+	void play_media();
+	void next_media();
+	void prev_media();
 };

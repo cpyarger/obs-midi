@@ -35,6 +35,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <vector>
 #include "midi-agent.h"
 #include "rpc/RpcEvent.h"
+#include "obs-controller.h"
 
 class DeviceManager : public QObject {
 	Q_OBJECT
