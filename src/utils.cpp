@@ -1007,7 +1007,35 @@ QStringList Utils::get_source_names(const QString &scene)
 	obs_data_release(data);
 	for (size_t i = 0; i < obs_data_array_count(arrayref); i++) {
 		obs_data *item = obs_data_array_item(arrayref, i);
-		names.append(obs_data_get_string(item, "name"));
+		const char *name = obs_data_get_string(item, "name");
+		names.append(name);
+		obs_sceneitem_t *group = obs_scene_get_group(Utils::GetSceneFromNameOrCurrent(scene), name);
+		if (obs_sceneitem_is_group(group))
+		{
+			obs_data_array_t* grouparray = obs_data_array_create();
+			auto groupsourceproc = [](obs_scene_t* scene, obs_sceneitem_t* item, void* privateData) -> bool {
+				auto* scenewArray = (obs_data_array_t*)privateData;
+				obs_data_t* scdata = obs_data_create();
+				const auto x = obs_sceneitem_get_source(item);
+				obs_data_t* sdata = obs_data_create_from_json(GetSceneData(x).toStdString().c_str());
+				obs_data_set_string(scdata, "name", obs_data_get_string(sdata, "name"));
+				obs_data_release(sdata);
+				obs_data_array_push_back(scenewArray, scdata);
+				obs_data_release(scdata);
+				UNUSED_PARAMETER(scene);
+				return true;
+			};
+			obs_sceneitem_group_enum_items(group, groupsourceproc, grouparray);
+
+			for (size_t i = 0; i < obs_data_array_count(grouparray); i++) {
+				obs_data* groupitem = obs_data_array_item(grouparray, i);
+				QString name_indent(obs_data_get_string(groupitem, "name"));
+				names.append(name_indent);
+				obs_data_release(groupitem);
+			}
+
+			obs_data_array_release(grouparray);
+		}
 		obs_data_release(item);
 	}
 	obs_data_array_release(arrayref);
